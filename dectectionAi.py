@@ -12,14 +12,27 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'  # Suppress INFO messages
 def preprocess_images(image_dir, img_size=(128, 128)):
     images = []
     labels = []
-    for img_file in os.listdir(image_dir):
-        img_path = os.path.join(image_dir, img_file)
+
+    # Loop through Carp fish images
+    for img_file in os.listdir(image_dir + '/carp'):
+        img_path = os.path.join(image_dir + '/carp', img_file)
         img = cv2.imread(img_path)
         if img is not None:
             img = cv2.resize(img, img_size)  # Resize the image
             img = img / 255.0  # Normalize the pixel values
             images.append(img)
-            labels.append(1)  # Assuming all images are of Carp fish
+            labels.append(1)  # Carp fish label
+
+    # Loop through non-Carp fish images
+    for img_file in os.listdir(image_dir + '/non_carp'):
+        img_path = os.path.join(image_dir + '/non_carp', img_file)
+        img = cv2.imread(img_path)
+        if img is not None:
+            img = cv2.resize(img, img_size)  # Resize the image
+            img = img / 255.0  # Normalize the pixel values
+            images.append(img)
+            labels.append(0)  # Non-Carp fish label
+
     return np.array(images), np.array(labels)
 
 # Set path to your dataset of Carp fish images
@@ -35,6 +48,8 @@ model = Sequential([
     MaxPooling2D(2, 2),
     Conv2D(64, (3, 3), activation='relu'),
     MaxPooling2D(2, 2),
+    Conv2D(128, (3, 3), activation='relu'),
+    MaxPooling2D(2, 2),
     Flatten(),
     Dense(128, activation='relu'),
     Dropout(0.5),
@@ -49,7 +64,7 @@ history = model.fit(X_train, y_train, epochs=20, validation_data=(X_test, y_test
 
 # Step 5: Evaluate the Model
 test_loss, test_acc = model.evaluate(X_test, y_test)
-print(f"Test accuracy: {test_acc*100}%")
+print(f"Test accuracy: {test_acc * 100}%")
 
 # Step 6: Save the Model
 model.save('carp_fish_detection_model.h5')
@@ -67,5 +82,5 @@ def predict_image(img_path, model):
 model = load_model('carp_fish_detection_model.h5')
 
 # Predict on a new image
-result = predict_image("C:/Users/hp/Downloads/461869661_1252848245729592_6881098299183911495_n.jpg", model)  # Replace with actual image path
+result = predict_image("C:/Users/hp/Downloads/Ameiurus_melas_by_Duane_Raver.jpg", model)  # Replace with actual image path
 print(result)
