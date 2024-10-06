@@ -60,7 +60,7 @@ model = Sequential([
 model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
 
 # Step 4: Train the Model
-history = model.fit(X_train, y_train, epochs=20, validation_data=(X_test, y_test), batch_size=10)
+history = model.fit(X_train, y_train, epochs=20, validation_data=(X_test, y_test), batch_size=100)
 
 # Step 5: Evaluate the Model
 test_loss, test_acc = model.evaluate(X_test, y_test)
@@ -82,5 +82,5 @@ def predict_image(img_path, model):
 model = load_model('carp_fish_detection_model.h5')
 
 # Predict on a new image
-result = predict_image("C:/Users/hp/Downloads/Ameiurus_melas_by_Duane_Raver.jpg", model)  # Replace with actual image path
+result = predict_image("C:/Users/hp/Downloads/jkfgkl.jpeg", model)  # Replace with actual image path
 print(result)
